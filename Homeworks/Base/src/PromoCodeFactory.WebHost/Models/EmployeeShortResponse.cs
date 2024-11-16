@@ -1,13 +1,10 @@
 ﻿using System;
 
-namespace PromoCodeFactory.WebHost.Models
-{
-    public class EmployeeShortResponse
-    {
-        public Guid Id { get; set; }
-        
-        public string FullName { get; set; }
+namespace PromoCodeFactory.WebHost.Models;
 
-        public string Email { get; set; }
-    }
+public record EmployeeShortResponse
+{
+    public Guid Id { get; init; }
+    public string FullName { get; init; }
+    public string Email { get; init; }
 }

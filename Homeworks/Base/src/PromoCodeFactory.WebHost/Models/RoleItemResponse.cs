@@ -1,13 +1,10 @@
 ﻿using System;
 
-namespace PromoCodeFactory.WebHost.Models
+namespace PromoCodeFactory.WebHost.Models;
+
+public record RoleItemResponse
 {
-    public class RoleItemResponse
-    {
-        public Guid Id { get; set; }
-
-        public string Name { get; set; }
-
-        public string Description { get; set; }
-    }
+    public Guid Id { get; init; }
+    public string Name { get; init; }
+    public string Description { get; init; }
 }
