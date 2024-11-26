@@ -1,8 +1,6 @@
-﻿namespace PromoCodeFactory.Core.Domain.PromoCodeManagement
+﻿namespace PromoCodeFactory.Core.Domain.PromoCodeManagement;
+
+public class Preference : BaseEntity
 {
-    public class Preference
-        : BaseEntity
-    {
-        public string Name { get; set; }
-    }
+    public string Name { get; set; }
 }
