@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using PromoCodeFactory.WebHost.Models.Promocode;
 
-namespace PromoCodeFactory.WebHost.Models;
+namespace PromoCodeFactory.WebHost.Models.Customer;
 
 public class CustomerResponse
 {

@@ -1,6 +1,7 @@
 ﻿using System;
+using PromoCodeFactory.WebHost.Models.Role;
 
-namespace PromoCodeFactory.WebHost.Models;
+namespace PromoCodeFactory.WebHost.Models.Employee;
 
 public class EmployeeResponse
 {
