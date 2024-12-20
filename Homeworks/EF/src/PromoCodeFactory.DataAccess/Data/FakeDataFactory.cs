@@ -69,16 +69,26 @@ public static class FakeDataFactory
     {
         get
         {
-            var customerId = Guid.Parse("a6c8c6b1-4349-45b0-ab31-244740aaf0f0");
             var customers = new List<Customer>()
             {
                 new()
                 {
-                    Id = customerId,
+                    Id = Guid.Parse("a6c8c6b1-4349-45b0-ab31-244740aaf0f0"),
                     Email = "ivan_sergeev@mail.ru",
                     FirstName = "Иван",
                     LastName = "Петров",
-                    //TODO: Добавить предзаполненный список предпочтений
+                    Preferences = [Preferences.First(z => z.Name == "Театр")]
+                },
+                new()
+                {
+                    Id = Guid.Parse("a90ee234-b4fb-4266-9117-d0a83666a2f5"),
+                    Email = "alex@ya.ru",
+                    FirstName = "Александр",
+                    LastName = "Выдуманный",
+                    Preferences = [
+                        Preferences.First(z => z.Name == "Семья"),
+                        Preferences.First(z => z.Name == "Дети")
+                    ]
                 }
             };
 
