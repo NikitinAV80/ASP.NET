@@ -1,17 +1,28 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PromoCodeFactory.Core.Abstractions.Repositories;
 using PromoCodeFactory.Core.Domain.Administration;
 using PromoCodeFactory.Core.Domain.PromoCodeManagement;
 using PromoCodeFactory.DataAccess.Data;
+using PromoCodeFactory.DataAccess.EntityFramework;
 using PromoCodeFactory.DataAccess.Repositories;
+using PromoCodeFactory.WebHost.Mapping;
 
 namespace PromoCodeFactory.WebHost;
 
 public class Startup
 {
+    public IConfiguration Configuration { get; }
+    
+    public Startup(IConfiguration configuration)
+    {
+        Configuration = configuration;
+    }
+
     // This method gets called by the runtime. Use this method to add services to the container.
     // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
     public void ConfigureServices(IServiceCollection services)
@@ -23,14 +34,17 @@ public class Startup
             new InMemoryRepository<Role>(FakeDataFactory.Roles));
         services.AddScoped(typeof(IRepository<Preference>), (x) =>
             new InMemoryRepository<Preference>(FakeDataFactory.Preferences));
-        services.AddScoped(typeof(IRepository<Customer>), (x) =>
-            new InMemoryRepository<Customer>(FakeDataFactory.Customers));
+        
+        services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 
         services.AddOpenApiDocument(options =>
         {
             options.Title = "PromoCode Factory API Doc";
             options.Version = "1.0";
         });
+
+        services.ConfigureEFContext(Configuration.GetConnectionString("sqlite"));
+        services.AddSingleton<IMapper>(new Mapper(GetMapperConfiguration()));
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -59,5 +73,24 @@ public class Startup
         {
             endpoints.MapControllers();
         });
+    }
+    
+    // private static IServiceCollection InstallAutomapper(IServiceCollection services)
+    // {
+    //     services.AddSingleton<IMapper>(new Mapper(GetMapperConfiguration()));
+    //     return services;
+    // }
+        
+    private static MapperConfiguration GetMapperConfiguration()
+    {
+        var configuration = new MapperConfiguration(cfg =>
+        {
+            cfg.AddProfile<CustomerMappingProfile>();
+            // cfg.AddProfile<LessonMappingsProfile>();
+            // cfg.AddProfile<BusinessLogic.Services.Mapping.CourseMappingsProfile>();
+            // cfg.AddProfile<BusinessLogic.Services.Mapping.LessonMappingsProfile>();
+        });
+        configuration.AssertConfigurationIsValid();
+        return configuration;
     }
 }

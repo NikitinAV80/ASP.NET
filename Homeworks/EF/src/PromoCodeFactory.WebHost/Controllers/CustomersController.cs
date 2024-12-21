@@ -1,7 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PromoCodeFactory.WebHost.Models;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using PromoCodeFactory.Core.Abstractions.Repositories;
+using PromoCodeFactory.Core.Domain.PromoCodeManagement;
+using PromoCodeFactory.WebHost.Models.Customer;
 
 namespace PromoCodeFactory.WebHost.Controllers;
 
@@ -12,18 +19,48 @@ namespace PromoCodeFactory.WebHost.Controllers;
 [Route("api/v1/[controller]")]
 public class CustomersController : ControllerBase
 {
-    [HttpGet]
-    public Task<ActionResult<CustomerShortResponse>> GetCustomersAsync()
+    private readonly IRepository<Customer> _customerRepository;
+    private readonly IMapper _mapper;
+
+    
+    public CustomersController(IRepository<Customer> customerRepository, IMapper mapper)
     {
-        //TODO: Добавить получение списка клиентов
-        throw new NotImplementedException();
+        _customerRepository = customerRepository ?? throw new ArgumentNullException(nameof(customerRepository));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+    }
+    
+    /// <summary>
+    ///     Получить данные всех покупателей.
+    /// </summary>
+    /// <returns>Список покупателей <see cref="CustomerShortResponse"/></returns>
+    [HttpGet]
+    [ProducesResponseType(typeof(CustomerShortResponse) ,StatusCodes.Status200OK)]
+    public async Task<ActionResult<CustomerShortResponse>> GetCustomersAsync()
+    {
+        var entities = await _customerRepository.GetAllAsync(HttpContext.RequestAborted);
+        var customers = _mapper.Map<List<CustomerShortResponse>>(entities);
+
+        return Ok(customers);
     }
 
-    [HttpGet("{id}")]
-    public Task<ActionResult<CustomerResponse>> GetCustomerAsync(Guid id)
+    /// <summary>
+    ///     Получить данные клиента вместе с выданными ему промокодами.
+    /// </summary>
+    /// <param name="id">Идентификатор клиента.</param>
+    /// <returns>Данные клиента<see cref="CustomerResponse"/></returns>
+    [HttpGet("{id:guid}")]
+    [ProducesResponseType(typeof(CustomerResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<CustomerResponse>> GetCustomerAsync(Guid id)
     {
-        //TODO: Добавить получение клиента вместе с выданными ему промомкодами
-        throw new NotImplementedException();
+        var entity = await _customerRepository.GetByIdAsync(id, HttpContext.RequestAborted);
+        
+        if(entity == null)
+            return NotFound();
+        
+        var customer = _mapper.Map<CustomerResponse>(entity);
+        
+        return Ok(customer);
     }
 
     [HttpPost]
