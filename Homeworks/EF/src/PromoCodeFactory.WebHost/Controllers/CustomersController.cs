@@ -67,6 +67,14 @@ public class CustomersController : ControllerBase
     public Task<IActionResult> CreateCustomerAsync(CreateOrEditCustomerRequest request)
     {
         //TODO: Добавить создание нового клиента вместе с его предпочтениями
+        // public class CreateOrEditCustomerRequest
+        // {
+        //     public string FirstName { get; set; }
+        //     public string LastName { get; set; }
+        //     public string Email { get; set; }
+        //     public List<Guid> PreferenceIds { get; set; }
+        // }
+        
         throw new NotImplementedException();
     }
 
@@ -74,13 +82,31 @@ public class CustomersController : ControllerBase
     public Task<IActionResult> EditCustomersAsync(Guid id, CreateOrEditCustomerRequest request)
     {
         //TODO: Обновить данные клиента вместе с его предпочтениями
+        // public class CreateOrEditCustomerRequest
+        // {
+        //     public string FirstName { get; set; }
+        //     public string LastName { get; set; }
+        //     public string Email { get; set; }
+        //     public List<Guid> PreferenceIds { get; set; }
+        // }
+        
         throw new NotImplementedException();
     }
 
+    /// <summary>
+    ///     Удаление клиента вместе с выданными ему промокодами.
+    /// </summary>
+    /// <param name="id">Идентификатор клиента.</param>
+    /// <returns></returns>
     [HttpDelete]
-    public Task<IActionResult> DeleteCustomer(Guid id)
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteCustomer(Guid id)
     {
-        //TODO: Удаление клиента вместе с выданными ему промокодами
-        throw new NotImplementedException();
+        var result = await _customerRepository.DeleteAsync(id, HttpContext.RequestAborted);
+
+        return result 
+            ? NoContent() 
+            : NotFound();
     }
 }

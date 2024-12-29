@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using PromoCodeFactory.Core.Domain.Administration;
@@ -16,10 +17,15 @@ public sealed class DatabaseContext : DbContext
     public DbSet<PromoCode> PromoCodes { get; set; }
 
 
+    private static bool initDb = false;
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
     {
-        Database.EnsureDeleted();
-        Database.EnsureCreated();
+        if (!initDb)
+        {
+            Database.EnsureDeleted();
+            Database.EnsureCreated();
+            initDb = true;
+        }
     }
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -28,15 +34,25 @@ public sealed class DatabaseContext : DbContext
 
         optionsBuilder.UseSeeding((context, _) =>
         {
-            Employees.AddRange(FakeDataFactory.Employees);
-            Customers.AddRange(FakeDataFactory.Customers);
-            context.SaveChanges();
+            var employees = Employees.Any();
+            
+            if (!employees)
+            {
+                Employees.AddRange(FakeDataFactory.Employees);
+                Customers.AddRange(FakeDataFactory.Customers);
+                context.SaveChanges();
+            }
         })
         .UseAsyncSeeding(async (context, _, cancellationToken) =>
         {
-            Employees.AddRange(FakeDataFactory.Employees);
-            Customers.AddRange(FakeDataFactory.Customers);
-            await context.SaveChangesAsync(cancellationToken);
+            var employees = await Employees.AnyAsync(cancellationToken: cancellationToken);
+
+            if (!employees)
+            {
+                Employees.AddRange(FakeDataFactory.Employees);
+                Customers.AddRange(FakeDataFactory.Customers);
+                await context.SaveChangesAsync(cancellationToken);
+            }
         });
     }
 }

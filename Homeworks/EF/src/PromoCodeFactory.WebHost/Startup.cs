@@ -11,6 +11,7 @@ using PromoCodeFactory.DataAccess.Data;
 using PromoCodeFactory.DataAccess.EntityFramework;
 using PromoCodeFactory.DataAccess.Repositories;
 using PromoCodeFactory.WebHost.Mapping;
+using PromoCodeFactory.WebHost.Mapping.Installer;
 
 namespace PromoCodeFactory.WebHost;
 
@@ -44,7 +45,7 @@ public class Startup
         });
 
         services.ConfigureEFContext(Configuration.GetConnectionString("sqlite"));
-        services.AddSingleton<IMapper>(new Mapper(GetMapperConfiguration()));
+        services.InstallAutomapper();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -73,24 +74,5 @@ public class Startup
         {
             endpoints.MapControllers();
         });
-    }
-    
-    // private static IServiceCollection InstallAutomapper(IServiceCollection services)
-    // {
-    //     services.AddSingleton<IMapper>(new Mapper(GetMapperConfiguration()));
-    //     return services;
-    // }
-        
-    private static MapperConfiguration GetMapperConfiguration()
-    {
-        var configuration = new MapperConfiguration(cfg =>
-        {
-            cfg.AddProfile<CustomerMappingProfile>();
-            // cfg.AddProfile<LessonMappingsProfile>();
-            // cfg.AddProfile<BusinessLogic.Services.Mapping.CourseMappingsProfile>();
-            // cfg.AddProfile<BusinessLogic.Services.Mapping.LessonMappingsProfile>();
-        });
-        configuration.AssertConfigurationIsValid();
-        return configuration;
     }
 }

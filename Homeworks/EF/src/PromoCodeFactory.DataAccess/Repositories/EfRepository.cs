@@ -19,7 +19,7 @@ public class EfRepository<T> : IRepository<T> where T : BaseEntity
         Context = context ?? throw new ArgumentNullException(nameof(context));
         _entitySet = context.Set<T>();
     }
-    #region Get
+
     public async Task<IEnumerable<T>> GetAllAsync(CancellationToken token = default)
     {
         return await _entitySet.ToListAsync(token);
@@ -29,5 +29,31 @@ public class EfRepository<T> : IRepository<T> where T : BaseEntity
     {
         return await _entitySet.FindAsync(id, token);
     }
-    #endregion Get
+
+    public async Task<Guid> CreateAsync(T entity, CancellationToken token = default)
+    {
+        var newEntity = await _entitySet.AddAsync(entity, token);
+        await Context.SaveChangesAsync(token);
+        
+        return newEntity.Entity.Id;
+    }
+
+    public async Task UpdateAsync(T entity, CancellationToken token = default)
+    {
+        Context.Entry(entity).State = EntityState.Modified;
+        await Context.SaveChangesAsync(token);
+    }
+
+    public async Task<bool> DeleteAsync(Guid id, CancellationToken token = default)
+    {
+        var entity = await _entitySet.FindAsync(id, token);
+        
+        if (entity == null)
+            return false;
+        
+        _entitySet.Remove(entity);
+        await Context.SaveChangesAsync(token);
+
+        return true;
+    }
 }

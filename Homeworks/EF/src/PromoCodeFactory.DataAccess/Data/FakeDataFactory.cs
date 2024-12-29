@@ -85,9 +85,14 @@ public static class FakeDataFactory
                     Email = "alex@ya.ru",
                     FirstName = "Александр",
                     LastName = "Выдуманный",
-                    Preferences = [
+                    Preferences =
+                    [
                         Preferences.First(z => z.Name == "Семья"),
                         Preferences.First(z => z.Name == "Дети")
+                    ],
+                    PromoCodes =
+                    [
+                        PromoCodes.First(z => z.Code == "первый код")
                     ]
                 }
             };
@@ -95,4 +100,25 @@ public static class FakeDataFactory
             return customers;
         }
     }
+
+    public static IEnumerable<PromoCode> PromoCodes
+    {
+        get
+        {
+            var promoCodes = new List<PromoCode>
+            {
+                new()
+                {
+                    Id = Guid.Parse("75955b9c-3cf0-4ebd-83e2-23e014bc4be4"),
+                    Code = "первый код",
+                    ServiceInfo = "какой-то код на что-то где-то там",
+                    BeginDate = DateTime.Now,
+                    EndDate = DateTime.Now.AddDays(100),
+                    PartnerName = "ФИГ ВАМ"
+                }
+            };
+            return promoCodes;
+        }
+    }
+    
 }
