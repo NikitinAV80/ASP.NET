@@ -27,7 +27,36 @@ public sealed class DatabaseContext : DbContext
             initDb = true;
         }
     }
-    
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<PromoCode>(entity =>
+        {
+            entity
+                .HasOne(p => p.Customer)
+                .WithMany(p => p.PromoCodes)
+                .HasForeignKey(p => p.CustomerId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            entity
+                .HasOne(p => p.Preference)
+                .WithMany(p => p.PromoCodes)
+                .HasForeignKey(p => p.PreferenceId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<Employee>(entity =>
+        {
+            entity
+                .HasOne(p => p.Role)
+                .WithOne(p => p.Employee)
+                .HasForeignKey<Employee>(p => p.RoleId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+    }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information);

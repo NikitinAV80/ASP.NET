@@ -23,7 +23,11 @@ public class Employee : BaseEntity
     /// <summary>
     ///     Навигационное свойство роль.
     /// </summary>
-    public virtual Role Role { get; set; }
+    // public virtual Role Role { get; set; }
+    //
+    // public virtual Guid RoleId { get; set; }
+    
+    public virtual Role? Role { get; set; }
 
-    public virtual Guid RoleId { get; set; }
+    public virtual Guid? RoleId { get; set; }
 }

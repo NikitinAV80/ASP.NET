@@ -29,12 +29,12 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddControllers();
-        services.AddScoped(typeof(IRepository<Employee>), (x) =>
-            new InMemoryRepository<Employee>(FakeDataFactory.Employees));
-        services.AddScoped(typeof(IRepository<Role>), (x) =>
-            new InMemoryRepository<Role>(FakeDataFactory.Roles));
-        services.AddScoped(typeof(IRepository<Preference>), (x) =>
-            new InMemoryRepository<Preference>(FakeDataFactory.Preferences));
+        // services.AddScoped(typeof(IRepository<Employee>), (x) =>
+        //     new InMemoryRepository<Employee>(FakeDataFactory.Employees));
+        // services.AddScoped(typeof(IRepository<Role>), (x) =>
+        //     new InMemoryRepository<Role>(FakeDataFactory.Roles));
+        // services.AddScoped(typeof(IRepository<Preference>), (x) =>
+        //     new InMemoryRepository<Preference>(FakeDataFactory.Preferences));
         
         services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 

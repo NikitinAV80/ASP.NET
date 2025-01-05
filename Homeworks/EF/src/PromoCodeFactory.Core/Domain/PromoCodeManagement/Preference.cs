@@ -12,5 +12,10 @@ public class Preference : BaseEntity
     /// <summary>
     ///     Навигационное свойство покупатели.
     /// </summary>
-    public virtual List<Customer>? Customers { get; set; }
+    public virtual List<Customer> Customers { get; set; }
+    
+    /// <summary>
+    ///     Навигационное свойство промокоды.
+    /// </summary>
+    public virtual List<PromoCode> PromoCodes { get; set; }
 }

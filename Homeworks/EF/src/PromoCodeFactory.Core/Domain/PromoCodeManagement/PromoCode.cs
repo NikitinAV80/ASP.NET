@@ -25,14 +25,17 @@ public class PromoCode : BaseEntity
     ///     Навигационное свойство работник.
     /// </summary>
     public virtual Employee? PartnerManager { get; set; }
+    public Guid? PartnerManagerId { get; set; }
     
     /// <summary>
     ///     Навигационное свойство предпочтение.
     /// </summary>
-    public virtual Preference Preference { get; set; }
+    public virtual Preference? Preference { get; set; }
+    public Guid? PreferenceId { get; set; }
     
     /// <summary>
     ///     Навигационное свойство покупатель.
     /// </summary>
     public virtual Customer? Customer { get; set; }
+    public Guid? CustomerId { get; set; }    
 }
